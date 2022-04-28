@@ -1,25 +1,49 @@
 import React from 'react'
-import Map from './components/Map'
-import Header from './components/Header'
-import Footer from './components/Footer'
-import './App.css'
-const center = {
-  lat: 39.8282,
-  lng: -98.5795
+import { GoogleMap, useJsApiLoader, useLoadScript, } from '@react-google-maps/api';
+
+const containerStyle = {
+  width: '400px',
+  height: '400px'
 };
-const App = () => {
 
-  return (
-    <>
-      <Header title='TruckMiles 2022' />
-      <Map center={center} ></Map>
+const center = {
+  lat: -3.745,
+  lng: -38.523
+};
 
-      <Footer />
-    </>
-  )
+function MyComponent() {
+  const { isLoaded } = useLoadScript({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
+  })
+
+  const [map, setMap] = React.useState(null)
+
+  const onLoad = React.useCallback(function callback(map) {
+    const bounds = new window.google.maps.LatLngBounds(center);
+    map.fitBounds(bounds);
+    setMap(map)
+  }, [])
+
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null)
+  }, [])
+
+  return isLoaded ? (
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={10}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+      >
+        { /* Child components, such as markers, info windows, etc. */ }
+        <></>
+      </GoogleMap>
+  ) : <></>
 }
 
-export default App
+export default React.memo(MyComponent)
 
 
 
