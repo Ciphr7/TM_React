@@ -1,11 +1,15 @@
 import React from 'react'
-import { GoogleMap, useJsApiLoader, useLoadScript, } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Header from './components/Header';
-import Footer from './components/Footer';
+// import Footer from './components/Footer';
 import './App.css'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import Navbar from './components/Menul';
+
+
 const containerStyle = {
   width: '100vw',
-  height: '70vh'
+  height: '80vh'
 };
 
 const center = {
@@ -14,7 +18,7 @@ const center = {
 };
 
 function App() {
-  const { isLoaded } = useLoadScript({
+  const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
   })
@@ -33,7 +37,9 @@ function App() {
 
   return isLoaded ? (
     <>
+    <Router>
     <Header title="TruckMiles 2022" />
+    
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -44,7 +50,9 @@ function App() {
         { /* Child components, such as markers, info windows, etc. */ }
         <></>
       </GoogleMap>
-      <Footer />
+      
+     <Navbar></Navbar>
+      </Router>
       </>
   ) : <></>
 }
