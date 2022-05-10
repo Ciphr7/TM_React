@@ -2,7 +2,7 @@ import React from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Header from './components/Header';
 // import Footer from './components/Footer';
-import './App.css'
+
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Menul';
 
@@ -37,7 +37,9 @@ function App() {
 
   return isLoaded ? (
     <>
+    
     <Router>
+
     <Header title="TruckMiles 2022" />
     
       <GoogleMap
@@ -50,8 +52,11 @@ function App() {
         { /* Child components, such as markers, info windows, etc. */ }
         <></>
       </GoogleMap>
+     
+       <Navbar></Navbar>
+     
       
-     <Navbar></Navbar>
+     
       </Router>
       </>
   ) : <></>

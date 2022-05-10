@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+    
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: calc(var(--vh, 1vh) * 100);
+}
