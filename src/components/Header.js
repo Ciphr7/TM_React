@@ -7,7 +7,7 @@ const Header = ({title}) => {
 
   return (
     <header className="text-3xl text-white p-2 text-center font-bold bg-red-600"> 
-        <h1 >{title}</h1>
+        <h1 >{title} <span className='font-extralight'>&reg;</span></h1>
      
     </header>
   )
