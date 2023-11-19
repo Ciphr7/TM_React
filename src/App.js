@@ -40,7 +40,7 @@ function App() {
     
     <Router>
 
-    <Header title="TruckMiles 2022" />
+    <Header title="TruckMiles 2024" />
     
       <GoogleMap
         mapContainerStyle={containerStyle}

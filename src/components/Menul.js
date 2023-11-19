@@ -15,50 +15,43 @@ import MySelect from './RouteOptions'
 
 function Navbar() {
 
-  const [checked, setChecked] = useState(false); 
   const [sidebar, setSidebar] = useState(false);
-const loc1 =""
+
   const showSidebar = () => setSidebar(!sidebar);
-  const handleChange = () => {
-    setChecked(!checked);
-    console.log('The checkbox was toggled');
-    setOriginToCurrentLocation()
-  };
-  function componentDidMount() {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      console.log("Latitude is :", position.coords.latitude);
-      console.log("Longitude is :", position.coords.longitude);
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      const loc1 = (lat + ':' + lng);
-    });
-  }
-  function setOriginToCurrentLocation() {
-    componentDidMount()
-    const b = this.checkbox === checked;
-    var self = this;
-    if (!b) {
-      this.input1 = "";
-    } else if (navigator.geolocation) {
-      var options = {
-        maximumAge: 0,
-        timeout: 30000,
-        enableHighAccuracy: true,
-      };
-      navigator.geolocation.getCurrentPosition(success, error, [options]);
+  // State variables to manage checkbox and input values
+  const [isChecked, setIsChecked] = useState(false);
+  const [locationValue, setLocationValue] = useState(null);
+
+  // Function to get the user's current location
+  const getGeolocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Extract latitude and longitude from the position object
+          const { latitude, longitude } = position.coords;
+          setLocationValue(`Latitude: ${latitude}, Longitude: ${longitude}`);
+        },
+        (error) => {
+          console.error('Error getting geolocation:', error);
+          setLocationValue(null);
+        }
+      );
     } else {
-      alert("User did not allow access to GPS location");
+      console.error('Geolocation is not supported in this browser.');
+      setLocationValue(null);
     }
-    function error(err) {
-      console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  // Function to handle checkbox change
+  const handleCheckboxChange = () => {
+    setIsChecked(!isChecked); // Toggle the checkbox value
+
+    // Set the input value based on the checkbox state
+    if (isChecked) {
+      setLocationValue(null);
+    } else {
+      getGeolocation();
     }
-    function success(position) {
-      var lat = position.coords.latitude;
-      var lon = position.coords.longitude;
-      self.input1 = lat + ":" + lon;
-    }
-    /* When document is loaded fully...
-     ****************************************/
   }
 
   return (
@@ -93,20 +86,22 @@ const loc1 =""
                   />
 
 
-                  <label class="block">
+                  <label className="block">
                     <div className='flex bg-red-600 w-60 rounded-sm m-1 p-1'>
-                      <input type="checkbox" onChange={handleChange} class=" checked:bg-blue-500 w-10 h-5 " 
-                       checked={checked} value={checked}/>
-                      <span class="block text-sm font-sm text-white">Start at my GPS Location</span>
+                      <input type="checkbox" checked={isChecked}
+                        onChange={handleCheckboxChange} className=" checked:bg-blue-500 w-10 h-5 "
+                      />
+                      <span className="block text-sm font-sm text-white">Start at my GPS Location</span>
                     </div></label>
                   <div className='mx-8'>
 
                     <input className='searchBox p-1 m-2'
 
                       type="text"
+                      value={locationValue === null ? '' : locationValue}
                       placeholder="Search for Location"
-                      name = "loc1"
-                      value={loc1}
+
+
                     />
                     <input
                       className='searchBox p-1 m-2'
@@ -117,21 +112,21 @@ const loc1 =""
 
                   <button className='bg-red-600 text-white mx-4 w-60 rounded-sm '>Run Trip</button>
 
-                  <div><span class="block text-sm font-sm text-white">Trip Options</span></div>
+                  <div><span className="block text-sm font-sm text-white">Trip Options</span></div>
 
 
                   <MySelect />
 
 
                   <div className='flex bg-red-600 w-60 rounded-sm m-1 p-1'>
-                    <input type="checkbox" class=" checked:bg-blue-500 w-10 h-5 " />
-                    <span class="block text-sm font-sm text-white w-40">Close Borders</span>
+                    <input type="checkbox" className=" checked:bg-blue-500 w-10 h-5 " />
+                    <span className="block text-sm font-sm text-white w-40">Close Borders</span>
                   </div>
 
 
                   <div className='flex bg-red-600 rounded-sm w-60 m-1 p-1'>
-                    <input type="checkbox" class=" checked:bg-blue-500 w-10 h-5 " />
-                    <span class="block text-sm font-sm text-white ">Avoid Toll</span>
+                    <input type="checkbox" className=" checked:bg-blue-500 w-10 h-5 " />
+                    <span className="block text-sm font-sm text-white ">Avoid Toll</span>
                   </div>
 
                   <img
