@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import './Menul.css';
 import { IconContext } from 'react-icons';
 import LocationLookup from './LocationLookup';
+import AutocompleteInput from './docs/AutoComplete';
 
 
 function Navbar() {
@@ -46,8 +47,9 @@ function Navbar() {
                     alt='TurckMiles Logo'
                     src={tmLogo}
                   />
-                    <LocationLookup />
-
+                  <AutocompleteInput />
+                    {/* <LocationLookup />
+ */}
                 </div></form>
             </div>
           </nav>

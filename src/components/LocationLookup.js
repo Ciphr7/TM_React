@@ -86,8 +86,8 @@ class LocationLookup extends Component {
 
         />
         <button className='bg-red-600 text-white mx-4 w-60 rounded-sm '>Run Trip</button>
-
         <div><span className="block text-sm font-sm text-white">Trip Options</span></div> 
+
         <MySelect />
 
 
