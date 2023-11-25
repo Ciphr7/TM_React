@@ -7,15 +7,17 @@ import { Link } from 'react-router-dom'
 import './Menul.css';
 import { IconContext } from 'react-icons';
 import LocationLookup from './LocationLookup';
-import AutocompleteInput from './docs/AutoComplete';
 
 
-function Navbar() {
+
+
+function Menul() {
 
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
   // State variables to manage checkbox and input values
+ 
 
  return (
     <>
@@ -47,9 +49,9 @@ function Navbar() {
                     alt='TurckMiles Logo'
                     src={tmLogo}
                   />
-                  <AutocompleteInput />
-                    {/* <LocationLookup />
- */}
+                  
+                     <LocationLookup />
+ 
                 </div></form>
             </div>
           </nav>
@@ -61,4 +63,4 @@ function Navbar() {
 }
 
 
-export default Navbar;
+export default Menul;

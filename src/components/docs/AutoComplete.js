@@ -1,71 +1,80 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react';
 
-const AutocompleteInput = ({ id, apiKey }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://prime.promiles.com/WebAPI/api/ValidateLocation?locationText=${inputValue}&apikey=${apiKey}`
-        );
-        const data = response.data;
-
-        setSuggestions(
-          data.map((item) => `${item.City}, ${item.State}, ${item.PostalCode}`)
-        );
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // Handle error, e.g., show an error message to the user
-      }
+class AutocompleteInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputValue: '',
+      suggestions: [],
     };
+  }
 
-    if (inputValue.length >= 3) {
-      fetchData();
-    } else {
-      setSuggestions([]);
-    }
-  }, [inputValue, apiKey]);
+  fetchSuggestions = () => {
+    const { inputValue } = this.state;
+    const { apiKey } = this.props;
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+    fetch(
+      `https://prime.promiles.com/WebAPI/api/ValidateLocation?locationText=${inputValue}&apikey=${apiKey}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const suggestions = data.map(
+          (item) => `${item.City}, ${item.State}, ${item.PostalCode}`
+        );
+        this.setState({ suggestions });
+      })
+      .catch((error) => {
+        console.error('Error fetching suggestions:', error);
+      });
   };
 
-  const handleSelect = (selectedValue) => {
-    setInputValue(selectedValue);
+  handleInputChange = (e) => {
+    this.setState({ inputValue: e.target.value }, () => {
+      if (this.state.inputValue.length >= 3) {
+        this.fetchSuggestions();
+      }
+    });
   };
 
-  return (
-    <div>
-      <input
-        type="text"
-        id={id}
-        value={inputValue}
-        onChange={handleInputChange}
-        placeholder={`Type at least 3 characters for ${id}`}
-      />
-      <ul>
-        {suggestions.map((suggestion, index) => (
-          <li key={index} onClick={() => handleSelect(suggestion)}>
-            {suggestion}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+  handleSelect = (suggestion) => {
+    this.setState({ inputValue: suggestion });
+  };
 
-const App = () => {
-  const apiKey = 'bU03MSs2UjZIS21HMG5QSlIxUTB4QT090';
+  render() {
+    const { inputValue, suggestions } = this.state;
 
-  return (
-    <div>
-      <AutocompleteInput id="origin" apiKey={apiKey} />
-      <br />
-      <AutocompleteInput id="stop1" apiKey={apiKey} />
-    </div>
-  );
-};
-export default AutocompleteInput;
+    return (
+      <div>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={this.handleInputChange}
+          placeholder={`Type at least 3 characters`}
+        />
+        <ul>
+          {suggestions.map((suggestion, index) => (
+            <li key={index} onClick={() => this.handleSelect(suggestion)}>
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    const apiKey = 'bU03MSs2UjZIS21HMG5QSlIxUTB4QT090';
+
+    return (
+      <div>
+        <AutocompleteInput apiKey={apiKey} />
+        <br />
+        <AutocompleteInput apiKey={apiKey} />
+      </div>
+    );
+  }
+}
+
+export default App;

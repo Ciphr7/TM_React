@@ -4,7 +4,7 @@ import Header from './components/Header';
 // import Footer from './components/Footer';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Navbar from './components/Menul';
+import Menul from './components/Menul';
 
 
 const containerStyle = {
@@ -20,7 +20,7 @@ const center = {
 function App() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY= 'AIzaSyD0TSo9wlHN_Psu3chFZVYoSQS5rvz9Pog'
   })
 
   
@@ -53,7 +53,7 @@ function App() {
         <></>
       </GoogleMap>
      
-       <Navbar></Navbar>
+       <Menul></Menul>
      
       
      
