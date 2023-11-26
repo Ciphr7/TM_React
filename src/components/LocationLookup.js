@@ -23,6 +23,7 @@ class LocationLookup extends Component {
           const { latitude, longitude } = position.coords;
           this.setState({
             locationValue: `${latitude}:${longitude}`,
+            suggestions: [`${latitude}:${longitude}`]
           });
         },
         (error) => {
@@ -102,7 +103,7 @@ class LocationLookup extends Component {
 
     // Set the input value based on the checkbox state
     if (isChecked) {
-      this.setState({ locationValue: null });
+      this.setState({ locationValue: null, suggestions: []  });
     } else {
       this.getGeolocation();
     }
