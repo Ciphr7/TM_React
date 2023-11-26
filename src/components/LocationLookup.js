@@ -7,10 +7,10 @@ class LocationLookup extends Component {
     super(props);
     this.state = {
       isChecked: false,
-       input1Value: '',
-       input2Value: '', // New state for the second input
-      suggestions1: [],
-      suggestions2: [], // New state for the second set of suggestions
+      locationValue: null,
+      loc2Value: null,
+      suggestions: [],
+      suggestions2: [],
     };
   }
 
@@ -22,25 +22,25 @@ class LocationLookup extends Component {
           // Extract latitude and longitude from the position object
           const { latitude, longitude } = position.coords;
           this.setState({
-             input1Value: `${latitude}:${longitude}`,
+            locationValue: `${latitude}:${longitude}`,
           });
         },
         (error) => {
           console.error('Error getting geolocation:', error);
-          this.setState({  input1Value: null });
+          this.setState({ locationValue: null });
         }
       );
     } else {
       console.error('Geolocation is not supported in this browser.');
-      this.setState({  input1Value: null });
+      this.setState({ locationValue: null });
     }
   };
 
   fetchSuggestions = () => {
-    const {  input1Value, input2Value} = this.state;
+    const { locationValue } = this.state;
 
     fetch(
-      `https://prime.promiles.com/WebAPI/api/ValidateLocation?locationText=${ input2Value}&apikey=${'bU03MSs2UjZIS21HMG5QSlIxUTB4QT090'}`
+      `https://prime.promiles.com/WebAPI/api/ValidateLocation?locationText=${locationValue}&apikey=${'bU03MSs2UjZIS21HMG5QSlIxUTB4QT090'}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -54,20 +54,45 @@ class LocationLookup extends Component {
       });
   };
 
-  handleInputChange = (e, inputField) => {
-    const inputValue = e.target.value;
+  fetchSuggestions2 = () => {
+    const { loc2Value } = this.state;
 
-    this.setState({ [inputField]: inputValue }, () => {
-      if (inputValue.length >= 3) {
-        this.fetchSuggestions(inputValue, `suggestions${inputField}`);
+    fetch(
+      `https://prime.promiles.com/WebAPI/api/ValidateLocation?locationText=${loc2Value}&apikey=${'bU03MSs2UjZIS21HMG5QSlIxUTB4QT090'}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        const suggestions2 = data.map(
+          (item) => `${item.City}, ${item.State}, ${item.PostalCode}`
+        );
+        this.setState({ suggestions2 });
+      })
+      .catch((error) => {
+        console.error('Error fetching suggestions2:', error);
+      });
+  };
+
+  handleInputChange = (e) => {
+    this.setState({ locationValue: e.target.value }, () => {
+      if (this.state.locationValue.length >= 3) {
+        this.fetchSuggestions();
       }
     });
   };
-  
 
-  
-  handleSelect = (selectedValue, inputField) => {
-    this.setState({ [inputField]: selectedValue, [inputField.replace('suggestions', '')]: [] });
+  handleInputChange2 = (e) => {
+    this.setState({ loc2Value: e.target.value }, () => {
+      if (this.state.loc2Value.length >= 3) {
+        this.fetchSuggestions2();
+      }
+    });
+  };
+
+  handleSelect = (selectedValue) => {
+    this.setState({ locationValue: selectedValue, suggestions: [] });
+  };
+  handleSelect2 = (selectedValue2) => {
+    this.setState({ loc2Value: selectedValue2, suggestions2: [0]  });
   };
 
   // Function to handle checkbox change
@@ -77,15 +102,15 @@ class LocationLookup extends Component {
 
     // Set the input value based on the checkbox state
     if (isChecked) {
-      this.setState({  input1Value: null });
+      this.setState({ locationValue: null });
     } else {
       this.getGeolocation();
     }
   };
 
   render() {
-    
-    const { isChecked,  input1Value, input2Value, suggestions1, suggestions2 } = this.state;
+    const { isChecked, locationValue,loc2Value,suggestions, suggestions2 } = this.state;
+
     return (
       <>
         <label className="block">
@@ -106,33 +131,34 @@ class LocationLookup extends Component {
           <input
             className='searchBox p-1 m-2'
             type="text"
-            value={ input1Value === null ? '' :  input1Value}
+            value={locationValue === null ? '' : locationValue}
             onChange={this.handleInputChange}
             placeholder="Search for Location"
           />
         </label>
 
         <ul className="text-3 text-white p-2 text-center font-bold bg-red-600">
-          {suggestions1.map((suggestion, index) => (
+          {suggestions.map((suggestion, index) => (
             <li key={index} onClick={() => this.handleSelect(suggestion)}>
               {suggestion}
             </li>
           ))}
         </ul>
+
         <label>
           <input
             className='searchBox p-1 m-2'
             type="text"
-            value={input2Value}
-            onChange={(e) => this.handleInputChange(e, 'input2Value')}
-            placeholder="Second Input"
+            value={loc2Value === null ? '' : loc2Value}
+            onChange={this.handleInputChange2}
+            placeholder="Search for Location"
           />
         </label>
 
         <ul className="text-3 text-white p-2 text-center font-bold bg-red-600">
-          {suggestions2.map((suggestion, index) => (
-            <li key={index} onClick={() => this.handleSelect(suggestion, 'suggestions2')}>
-              {suggestion}
+          {suggestions2.map((suggestion2, index) => (
+            <li key={index} onClick={() => this.handleSelect2(suggestion2)}>
+              {suggestion2}
             </li>
           ))}
         </ul>
