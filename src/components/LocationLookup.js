@@ -89,10 +89,10 @@ class LocationLookup extends Component {
   };
 
   handleSelect = (selectedValue) => {
-    this.setState({ locationValue: selectedValue, suggestions: [] });
+    this.setState({ locationValue: selectedValue, suggestions: [selectedValue] });
   };
   handleSelect2 = (selectedValue2) => {
-    this.setState({ loc2Value: selectedValue2, suggestions2: [0]  });
+    this.setState({ loc2Value: selectedValue2, suggestions2: [selectedValue2]});
   };
 
   // Function to handle checkbox change
